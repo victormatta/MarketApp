@@ -5,11 +5,9 @@ import 'package:market_app/models/product_model.dart';
 import 'package:market_app/utils/routes.dart';
 import 'package:provider/provider.dart';
 
-class ProductItem extends StatelessWidget {
+class ProductGridItem extends StatelessWidget {
+  const ProductGridItem({super.key});
 
-  const ProductItem({
-    super.key
-    });
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +32,22 @@ class ProductItem extends StatelessWidget {
           ),
           title: Text(product.title, textAlign: TextAlign.center),
           trailing: IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            color: Colors.deepOrange,
             onPressed: () {
               cart.addItem(product);
-              print(cart.itemCount);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Produto adicionado com sucesso!"),
+                  duration: const Duration(seconds: 3),
+                  action: SnackBarAction(
+                    label: "DESFAZER",
+                    onPressed: () {
+                      cart.removeSingleItem(product.id);
+                    }),
+                )
+              );
             },
-            icon: const Icon(Icons.shopping_cart),
-            color: Colors.deepOrange
           ),
           backgroundColor: Colors.black54,
         ),

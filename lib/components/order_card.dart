@@ -50,10 +50,10 @@ class _OrderCardState extends State<OrderCard> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(product.name, style: TextStyle(
+                      Text(product.name, style: const TextStyle(
                         fontWeight: FontWeight.bold
                       ),),
-                      Text("${product.quantity}x R\$ ${product.price}", style: TextStyle(
+                      Text("${product.quantity}x R\$ ${product.price}", style: const TextStyle(
                         color: Colors.grey
                       ),)
                     ],

@@ -19,7 +19,7 @@ class CartPage extends StatelessWidget {
         ),
         backgroundColor: Colors.purple,
       ),
-      drawer: AppDrawer(),
+      drawer: const AppDrawer(),
       body: Column(
         children: [
           Padding(

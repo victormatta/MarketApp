@@ -20,6 +20,28 @@ class CartItemWidget extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: const Icon(Icons.delete, color: Colors.white, size: 30),
       ),
+      confirmDismiss: (_) {
+        return showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Exclusão de Itens"),
+            content: Text("Tem certeza que deseja excluir ?"),
+            actions: [
+              TextButton(
+                child: const Text("Sim"),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                ),
+              TextButton(
+                child: const Text("Não"),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },)
+            ],
+          ),
+          );
+      },
       onDismissed: (_) {
         Provider.of<CartModel>(context, listen: false).removeItem(cartItem.productId);
       },
