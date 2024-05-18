@@ -56,8 +56,8 @@ class CartPage extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(child:
-          ListView.builder(
+          Expanded(
+            child: ListView.builder(
             itemCount: items.length,
             itemBuilder: (context, index) => CartItemWidget(cartItem: items[index])
             ),
@@ -67,10 +67,3 @@ class CartPage extends StatelessWidget {
     );
   }
 }
-
-
-// Chip(
-//                     backgroundColor: Colors.purple,
-//                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-//                     label: const Text('R\$1000,00', style: TextStyle(color: Colors.white),),
-//                     ),
