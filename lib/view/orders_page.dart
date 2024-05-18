@@ -13,11 +13,10 @@ class OrdersPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text("Meus Pedidos", style: TextStyle(
-            color: Colors.white,
-          ),
-          ),
+        title: Text("Meus Pedidos", style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold
+        ),
         ),
         backgroundColor: Colors.purple,
       ),

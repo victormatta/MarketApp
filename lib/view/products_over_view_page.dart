@@ -29,7 +29,11 @@ class ProductsOverViewPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Minha Loja', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: Text('Minha Loja',
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold
+          ),
         ),
         actions: [
           PopupMenuButton(
