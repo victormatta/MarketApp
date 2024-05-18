@@ -24,8 +24,8 @@ class CartItemWidget extends StatelessWidget {
         return showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text("Exclusão de Itens"),
-            content: Text("Tem certeza que deseja excluir ?"),
+            title: const Text("Exclusão de Itens"),
+            content: const Text("Tem certeza que deseja excluir ?"),
             actions: [
               TextButton(
                 child: const Text("Sim"),

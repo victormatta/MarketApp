@@ -36,7 +36,28 @@ class ProductManagerWidget extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: () {
-                  Provider.of<ProductListController>(context, listen: false).removeProduct(product);
+                  showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Exclusão de produtos"),
+                      content: const Text("Tem certeza que deseja excluir esse produto ?"),
+                      actions: [
+                        TextButton(
+                          child: const Text("Sim"),
+                          onPressed: () {
+                            Provider.of<ProductListController>(context, listen: false).removeProduct(product);
+                            Navigator.of(context).pop(true);
+                          },
+                          ),
+                        TextButton(
+                          child: const Text("Não"),
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                          ),
+                      ],
+                    ),
+                    );
                 },
                 ),
               ],
