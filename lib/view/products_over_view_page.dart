@@ -12,16 +12,34 @@ import 'package:provider/provider.dart';
 // import 'package:provider/provider.dart';
 // import 'package:market_app/services/dummy_data.dart';
 
-enum FilterType {
-  Favorite,
-  All
+enum FilterType { Favorite, All }
 
-}
-
-class ProductsOverViewPage extends StatelessWidget {
+class ProductsOverViewPage extends StatefulWidget {
   // final List<ProductModel> loadedProducts = dummyProducts;
 
   const ProductsOverViewPage({super.key});
+
+  @override
+  State<ProductsOverViewPage> createState() => _ProductsOverViewPageState();
+}
+
+class _ProductsOverViewPageState extends State<ProductsOverViewPage> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration.zero).then((_) {
+      Provider.of<ProductListController>(context, listen: false)
+          .getProducts()
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,39 +47,37 @@ class ProductsOverViewPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Minha Loja',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold
-          ),
+        title: const Text(
+          'Minha Loja',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         actions: [
           PopupMenuButton(
             icon: const Icon(Icons.more_vert, color: Colors.white),
             itemBuilder: (_) => [
-            const PopupMenuItem(
-              value: FilterType.Favorite,
-              child: Text('Somente Favoritos'),
+              const PopupMenuItem(
+                value: FilterType.Favorite,
+                child: Text('Somente Favoritos'),
               ),
               const PopupMenuItem(
                 value: FilterType.All,
                 child: Text('Todos'),
-                )
-          ],
-          onSelected: (FilterType selectedValue) {
-            if (selectedValue == FilterType.Favorite) {
-              provider.showFavoriteOnly();
-            } else {
-              provider.showAll();
-            }
-          },
+              )
+            ],
+            onSelected: (FilterType selectedValue) {
+              if (selectedValue == FilterType.Favorite) {
+                provider.showFavoriteOnly();
+              } else {
+                provider.showAll();
+              }
+            },
           ),
           Consumer<CartModel>(
-            child: IconButton(onPressed: () {
-              Navigator.of(context).pushNamed(Routes.CART);
-            },
-              icon: const Icon(Icons.shopping_cart, color: Colors.white)
-              ),
+            child: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(Routes.CART);
+                },
+                icon: const Icon(Icons.shopping_cart, color: Colors.white)),
             builder: (context, cart, child) => Bagdee(
               value: cart.itemCount.toString(),
               color: Colors.red,
@@ -72,7 +88,11 @@ class ProductsOverViewPage extends StatelessWidget {
         backgroundColor: Colors.purple,
       ),
       drawer: const AppDrawer(),
-      body: const ProductGrid(),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : const ProductGrid(),
     );
   }
 }
