@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:market_app/controllers/product_controller.dart';
 import 'package:market_app/models/product_model.dart';
-import 'package:market_app/utils/routes.dart';
+// import 'package:market_app/utils/routes.dart';
 import 'package:provider/provider.dart';
 
 class ProductEditPage extends StatefulWidget {
@@ -61,13 +61,15 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
     _formKey.currentState?.save();
 
-    Provider.of<ProductListController>(context, listen: false).editProductFromData(_formData);
-    Navigator.of(context).pushNamed(Routes.HOME);
+    Provider.of<ProductListController>(context, listen: false)
+        .editProductFromData(_formData);
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    final ProductModel specificProduct = ModalRoute.of(context)?.settings.arguments as ProductModel;
+    final ProductModel specificProduct =
+        ModalRoute.of(context)?.settings.arguments as ProductModel;
 
     if (_formData["id"] == null) {
       _formData["id"] = specificProduct.id;
@@ -100,10 +102,12 @@ class _ProductEditPageState extends State<ProductEditPage> {
           child: ListView(
             children: [
               TextFormField(
-                decoration: const InputDecoration(labelText: "Título do Produto"),
+                decoration:
+                    const InputDecoration(labelText: "Título do Produto"),
                 controller: _titleController,
                 textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(_priceFocus),
+                onFieldSubmitted: (_) =>
+                    FocusScope.of(context).requestFocus(_priceFocus),
                 onSaved: (title) => _formData["title"] = title ?? "",
                 validator: (_title) {
                   final title = _title ?? "";
@@ -120,16 +124,20 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 },
               ),
               TextFormField(
-                decoration: const InputDecoration(labelText: "Preço do Produto"),
+                decoration:
+                    const InputDecoration(labelText: "Preço do Produto"),
                 controller: _priceController,
                 textInputAction: TextInputAction.next,
                 focusNode: _priceFocus,
-                onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(_descriptionFocus),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                onFieldSubmitted: (_) =>
+                    FocusScope.of(context).requestFocus(_descriptionFocus),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
                 ],
-                onSaved: (price) => _formData["price"] = double.parse(price ?? "0"),
+                onSaved: (price) =>
+                    _formData["price"] = double.parse(price ?? "0"),
                 validator: (_price) {
                   final price = _price ?? "0";
 
@@ -145,13 +153,15 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 },
               ),
               TextFormField(
-                decoration: const InputDecoration(labelText: "Descrição do Produto"),
+                decoration:
+                    const InputDecoration(labelText: "Descrição do Produto"),
                 controller: _descriptionController,
                 keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.next,
                 focusNode: _descriptionFocus,
                 onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(),
-                onSaved: (description) => _formData["description"] = description ?? "",
+                onSaved: (description) =>
+                    _formData["description"] = description ?? "",
                 validator: (_description) {
                   final description = _description ?? "";
 
@@ -170,12 +180,14 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      decoration: const InputDecoration(labelText: "Url do Produto"),
+                      decoration:
+                          const InputDecoration(labelText: "Url do Produto"),
                       keyboardType: TextInputType.url,
                       textInputAction: TextInputAction.done,
                       focusNode: _imageUrl,
                       controller: _imageUrlController,
-                      onSaved: (imageUrl) => _formData["imageUrl"] = imageUrl ?? "",
+                      onSaved: (imageUrl) =>
+                          _formData["imageUrl"] = imageUrl ?? "",
                       onFieldSubmitted: (_) => _submitForm(),
                       validator: (_imageUrl) {
                         final imageUrl = _imageUrl ?? "";
