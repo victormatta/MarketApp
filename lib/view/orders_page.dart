@@ -13,10 +13,9 @@ class OrdersPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Meus Pedidos", style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold
-        ),
+        title: const Text(
+          "Meus Pedidos",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.purple,
       ),
@@ -24,8 +23,9 @@ class OrdersPage extends StatelessWidget {
       body: Expanded(
         child: ListView.builder(
           itemCount: finalOrder.itemsCount,
-          itemBuilder: (context, index) => OrderCard(finalOrder: finalOrder.items[index]),
-          ),
+          itemBuilder: (context, index) =>
+              OrderCard(finalOrder: finalOrder.items[index]),
+        ),
       ),
     );
   }

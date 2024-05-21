@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 class ProductGridItem extends StatelessWidget {
   const ProductGridItem({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<ProductModel>(context, listen: false);
@@ -21,14 +20,14 @@ class ProductGridItem extends StatelessWidget {
         footer: GridTileBar(
           leading: Consumer<ProductModel>(
             builder: (context, product, _) => IconButton(
-              onPressed: () {
-                product.toggleFavorite();
-                interface.items;
-
-              },
-              icon: Icon(product.isFavorite! ? Icons.favorite : Icons.favorite_border),
-              color: Colors.deepOrange
-            ),
+                onPressed: () {
+                  product.toggleFavorite();
+                  interface.items;
+                },
+                icon: Icon(product.isFavorite!
+                    ? Icons.favorite
+                    : Icons.favorite_border),
+                color: Colors.deepOrange),
           ),
           title: Text(product.title, textAlign: TextAlign.center),
           trailing: IconButton(
@@ -36,33 +35,29 @@ class ProductGridItem extends StatelessWidget {
             color: Colors.deepOrange,
             onPressed: () {
               cart.addItem(product);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text("Produto adicionado com sucesso!"),
-                  duration: const Duration(seconds: 3),
-                  action: SnackBarAction(
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: const Text("Produto adicionado com sucesso!"),
+                duration: const Duration(seconds: 1),
+                action: SnackBarAction(
                     label: "DESFAZER",
                     onPressed: () {
                       cart.removeSingleItem(product.id);
                     }),
-                )
-              );
+              ));
             },
           ),
           backgroundColor: Colors.black54,
         ),
         child: GestureDetector(
           onTap: () {
-            Navigator.of(context).pushNamed(Routes.PRODUCT_DETAIL,
-            arguments: product,
+            Navigator.of(context).pushNamed(
+              Routes.PRODUCT_DETAIL,
+              arguments: product,
             );
           },
-          child: Image.network(
-            product.imageUrl,
-          fit: BoxFit.cover
-          ),
+          child: Image.network(product.imageUrl, fit: BoxFit.cover),
         ),
-        ),
+      ),
     );
   }
 }
