@@ -8,18 +8,11 @@ class ProductModel with ChangeNotifier {
   final String imageUrl;
   bool? isFavorite;
 
-  ProductModel({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.price,
-    required this.imageUrl,
-    this.isFavorite = false
-  });
-
-  void toggleFavorite() {
-    isFavorite = !isFavorite!;
-    notifyListeners();
-
-  }
+  ProductModel(
+      {required this.id,
+      required this.title,
+      required this.description,
+      required this.price,
+      required this.imageUrl,
+      this.isFavorite = false});
 }

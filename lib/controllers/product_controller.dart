@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:market_app/exceptions/favorite_exception.dart';
 import 'package:market_app/exceptions/http_exception.dart';
 import 'package:market_app/models/product_model.dart';
 // import 'package:market_app/services/dummy_data.dart';
@@ -118,18 +119,15 @@ class ProductListController with ChangeNotifier {
           imageUrl: data["imageUrl"] as String,
           isFavorite: data["isFavorite"] as bool? ?? false);
 
-      // final url =
-      //     'https://market-devictor-default-rtdb.firebaseio.com/products/${updatedProduct.id}.json';
-
       final response = await http.patch(
-        Uri.parse('$_baseUrl/${updatedProduct.id}.json'),
+        Uri.parse('$_baseUrl/${data["id"]}.json'),
         body: jsonEncode(
           {
-            "name": updatedProduct.title,
-            "description": updatedProduct.description,
-            "price": updatedProduct.price,
-            "imageUrl": updatedProduct.imageUrl,
-            "isFavorite": updatedProduct.isFavorite,
+            "name": data["title"],
+            "description": data["description"],
+            "price": data["price"],
+            "imageUrl": data["imageUrl"],
+            "isFavorite": data["isFavorite"],
           },
         ),
       );
@@ -162,6 +160,34 @@ class ProductListController with ChangeNotifier {
         throw HttpException(
             msg: 'Não foi possível deleter o produto.',
             statusCode: response.statusCode);
+      }
+    }
+  }
+
+  void _toggleFavorite(ProductModel product) {
+    product.isFavorite = !product.isFavorite!;
+    notifyListeners();
+  }
+
+  Future<void> toggleFavorite(ProductModel product) async {
+    final productIndex = _items.indexWhere((prod) => prod.id == product.id);
+
+    if (productIndex >= 0) {
+      _toggleFavorite(product);
+
+      final response = await http.patch(
+        Uri.parse('$_baseUrl/${product.id}.json'),
+        body: jsonEncode(
+          {"isFavorite": product.isFavorite},
+        ),
+      );
+
+      if (response.statusCode >= 400) {
+        _toggleFavorite(product);
+        throw FavoriteException(
+          msg: 'Não foi possível adicionar o produto aos favoritos.',
+          statusCode: response.statusCode,
+        );
       }
     }
   }
