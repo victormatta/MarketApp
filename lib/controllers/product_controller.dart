@@ -3,12 +3,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:market_app/exceptions/http_exception.dart';
 import 'package:market_app/models/product_model.dart';
 // import 'package:market_app/services/dummy_data.dart';
 
 class ProductListController with ChangeNotifier {
-  final _url =
-      'https://market-devictor-default-rtdb.firebaseio.com/products.json';
+  final _baseUrl =
+      'https://market-devictor-default-rtdb.firebaseio.com/products';
   final List<ProductModel> _items = [];
   bool _showFavoriteOnly = false;
 
@@ -22,7 +23,7 @@ class ProductListController with ChangeNotifier {
   Future<void> getProducts() async {
     _items.clear();
 
-    final response = await http.get(Uri.parse(_url));
+    final response = await http.get(Uri.parse('$_baseUrl.json'));
     if (response.body == 'null') return;
 
     Map<String, dynamic> data = jsonDecode(response.body);
@@ -32,7 +33,7 @@ class ProductListController with ChangeNotifier {
           productData as Map<String, dynamic>;
       final String description = productMap['description'];
       final String imageUrl = productMap['imageUrl'];
-      final bool isFavorite = productMap['isFavorite'];
+      final bool isFavorite = productMap['isFavorite'] ?? false;
       final String name = productMap['name'];
       final double price = productMap['price'];
 
@@ -77,7 +78,7 @@ class ProductListController with ChangeNotifier {
 
   Future<void> addProduct(ProductModel product) async {
     final response = await http.post(
-      Uri.parse(_url),
+      Uri.parse('$_baseUrl.json'),
       body: jsonEncode(
         {
           "name": product.title,
@@ -109,23 +110,59 @@ class ProductListController with ChangeNotifier {
     int productIndex = _items.indexWhere((prod) => prod.id == data["id"]);
 
     if (productIndex >= 0) {
-      _items[productIndex] = ProductModel(
+      final updatedProduct = ProductModel(
           id: data["id"] as String,
           title: data["title"] as String,
           description: data["description"] as String,
           price: data["price"] as double,
-          imageUrl: data["imageUrl"] as String);
+          imageUrl: data["imageUrl"] as String,
+          isFavorite: data["isFavorite"] as bool? ?? false);
+
+      // final url =
+      //     'https://market-devictor-default-rtdb.firebaseio.com/products/${updatedProduct.id}.json';
+
+      final response = await http.patch(
+        Uri.parse('$_baseUrl/${updatedProduct.id}.json'),
+        body: jsonEncode(
+          {
+            "name": updatedProduct.title,
+            "description": updatedProduct.description,
+            "price": updatedProduct.price,
+            "imageUrl": updatedProduct.imageUrl,
+            "isFavorite": updatedProduct.isFavorite,
+          },
+        ),
+      );
+
+      if (response.statusCode >= 400) {
+        // Lidar com erro se necessário
+        return;
+      }
+
+      _items[productIndex] = updatedProduct;
+      notifyListeners();
     }
-    notifyListeners();
   }
 
-  void removeProduct(ProductModel productId) {
-    // _items.remove(productId);
-    int productIndex = _items.indexWhere((p) => p.id == productId.id);
+  Future<void> removeProduct(ProductModel product) async {
+    int productIndex = _items.indexWhere((prod) => prod.id == product.id);
 
     if (productIndex >= 0) {
-      _items.removeWhere((p) => p.id == productId.id);
+      final product = _items[productIndex];
+      _items.remove(product);
       notifyListeners();
+
+      final response = await http.delete(
+        Uri.parse('$_baseUrl/${product.id}.json'),
+      );
+
+      if (response.statusCode >= 400) {
+        _items.insert(productIndex, product);
+        notifyListeners();
+        throw HttpException(
+            msg: 'Não foi possível deleter o produto.',
+            statusCode: response.statusCode);
+      }
     }
   }
 }

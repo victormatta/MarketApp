@@ -30,7 +30,7 @@ class _ProductsOverViewPageState extends State<ProductsOverViewPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(seconds: 1)).then((_) {
+    Future.delayed(const Duration(seconds: 0, milliseconds: 700)).then((_) {
       Provider.of<ProductListController>(context, listen: false)
           .getProducts()
           .then((_) {
