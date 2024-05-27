@@ -15,7 +15,9 @@ class CartPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Carrinho', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: const Text(
+          'Carrinho',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.purple,
       ),
@@ -30,7 +32,10 @@ class CartPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Total:', style: TextStyle(fontWeight: FontWeight.bold),),
+                    const Text(
+                      'Total:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     const SizedBox(width: 10),
                     Container(
                       decoration: BoxDecoration(
@@ -39,18 +44,31 @@ class CartPage extends StatelessWidget {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(6.0),
-                        child: Text("R\$ ${cartInfo.totalAmount.toStringAsFixed(2)}", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                        child: Text(
+                          "R\$ ${cartInfo.totalAmount.toStringAsFixed(2)}",
+                          style: const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                     const Spacer(),
                     TextButton(
-                      child: const Text('COMPRAR', style: TextStyle(color: Colors.purple, fontWeight: FontWeight.bold),
-                    ),
-                      onPressed: () {
-                        Provider.of<OrderListModel>(context, listen: false).createOrder(cartInfo);
-                        cartInfo.clear();
-                      },
-                    ),
+                        child: Text(
+                          'COMPRAR',
+                          style: TextStyle(
+                              color: cartInfo.itemCount == 0
+                                  ? Colors.grey
+                                  : Colors.purple,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        onPressed: cartInfo.itemCount == 0
+                            ? null
+                            : () {
+                                Provider.of<OrderListModel>(context,
+                                        listen: false)
+                                    .createOrder(cartInfo);
+                                cartInfo.clear();
+                              }),
                   ],
                 ),
               ),
@@ -58,9 +76,9 @@ class CartPage extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) => CartItemWidget(cartItem: items[index])
-            ),
+                itemCount: items.length,
+                itemBuilder: (context, index) =>
+                    CartItemWidget(cartItem: items[index])),
           ),
         ],
       ),

@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:market_app/models/cart_item_model.dart';
 import 'package:market_app/models/product_model.dart';
+import 'package:http/http.dart' as http;
 
 class CartModel with ChangeNotifier {
+  final _baseUrl = 'https://market-devictor-default-rtdb.firebaseio.com/orders';
   Map<String, CartItemModel> _items = {};
 
   Map<String, CartItemModel> get items {
@@ -13,36 +16,39 @@ class CartModel with ChangeNotifier {
 
   int get itemCount {
     return _items.length;
-
   }
 
   double get totalAmount {
     double total = 0.0;
-    _items.forEach((key, cartItem) {
-      total += cartItem.price * cartItem.quantity;
-    },);
+    _items.forEach(
+      (key, cartItem) {
+        total += cartItem.price * cartItem.quantity;
+      },
+    );
     return total;
-
   }
 
   void addItem(ProductModel product) {
-    if(_items.containsKey(product.id)) {
-      _items.update(product.id,
-      (existingItem) => CartItemModel(
-        id: existingItem.id,
-        productId: existingItem.productId,
-        name: existingItem.name,
-        quantity: existingItem.quantity + 1,
-        price: existingItem.price),
-        );
+    if (_items.containsKey(product.id)) {
+      _items.update(
+        product.id,
+        (existingItem) => CartItemModel(
+            id: existingItem.id,
+            productId: existingItem.productId,
+            name: existingItem.name,
+            quantity: existingItem.quantity + 1,
+            price: existingItem.price),
+      );
     } else {
-      _items.putIfAbsent(product.id, () => CartItemModel(
-        id: Random().nextDouble().toString(),
-        productId: product.id,
-        name: product.title,
-        quantity: 1,
-        price: product.price),
-        );
+      _items.putIfAbsent(
+        product.id,
+        () => CartItemModel(
+            id: Random().nextDouble().toString(),
+            productId: product.id,
+            name: product.title,
+            quantity: 1,
+            price: product.price),
+      );
     }
     notifyListeners();
   }
@@ -50,35 +56,31 @@ class CartModel with ChangeNotifier {
   void removeItem(String productId) {
     _items.remove(productId);
     notifyListeners();
-
   }
 
   void removeSingleItem(String productId) {
-    if(!_items.containsKey(productId)) {
+    if (!_items.containsKey(productId)) {
       return;
     }
 
-    if(_items[productId]?.quantity == 1) {
+    if (_items[productId]?.quantity == 1) {
       _items.remove(productId);
-    }else {
+    } else {
       _items.update(
         productId,
         (existingItem) => CartItemModel(
-        id: existingItem.id,
-        productId: existingItem.productId,
-        name: existingItem.name,
-        quantity: existingItem.quantity - 1,
-        price: existingItem.price),
-        );
+            id: existingItem.id,
+            productId: existingItem.productId,
+            name: existingItem.name,
+            quantity: existingItem.quantity - 1,
+            price: existingItem.price),
+      );
     }
     notifyListeners();
-
   }
 
   void clear() {
     _items = {};
     notifyListeners();
-
   }
-
 }
