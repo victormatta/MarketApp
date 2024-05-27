@@ -1,13 +1,10 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:market_app/models/cart_item_model.dart';
 import 'package:market_app/models/product_model.dart';
-import 'package:http/http.dart' as http;
 
 class CartModel with ChangeNotifier {
-  final _baseUrl = 'https://market-devictor-default-rtdb.firebaseio.com/orders';
   Map<String, CartItemModel> _items = {};
 
   Map<String, CartItemModel> get items {
