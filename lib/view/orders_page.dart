@@ -9,8 +9,6 @@ class OrdersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final finalOrder = Provider.of<OrderListModel>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -20,13 +18,35 @@ class OrdersPage extends StatelessWidget {
         backgroundColor: Colors.purple,
       ),
       drawer: const AppDrawer(),
-      body: Expanded(
-        child: ListView.builder(
-          itemCount: finalOrder.itemsCount,
-          itemBuilder: (context, index) =>
-              OrderCard(finalOrder: finalOrder.items[index]),
-        ),
+      body: FutureBuilder(
+        future: Provider.of<OrderListModel>(context, listen: false).getOrders(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.error != null) {
+            return const Center(
+              child: Text("Ocorreu um erro"),
+            );
+          } else {
+            return Consumer<OrderListModel>(
+              builder: (context, orders, child) => ListView.builder(
+                itemCount: orders.itemsCount,
+                itemBuilder: (context, index) =>
+                    OrderCard(finalOrder: orders.items[index]),
+              ),
+            );
+          }
+        },
       ),
+      // body: _isLoading
+      //     ? const Center(
+      //         child: CircularProgressIndicator(),
+      //       )
+      //     : ListView.builder(
+      //         itemCount: finalOrder.itemsCount,
+      //         itemBuilder: (context, index) =>
+      //             OrderCard(finalOrder: finalOrder.items[index]),
+      //       ),
     );
   }
 }
